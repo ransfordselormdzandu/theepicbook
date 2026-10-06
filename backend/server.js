@@ -1,3 +1,4 @@
+
 "use strict";
 
 const express = require("express");
@@ -19,6 +20,15 @@ app.use(express.json());
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
+
+app.get("/health", async (req, res) => {
+  try {
+    await db.sequelize.authenticate();
+    res.status(200).json({ status: "ok" });
+  } catch (err) {
+    res.status(503).json({ status: "unavailable" });
+  }
+});
 
 require("./routes/cart-api-routes")(app);
 
